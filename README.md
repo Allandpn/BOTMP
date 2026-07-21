@@ -10,3 +10,7 @@ Funcionalidades:
 - salvar dados em SQLite
 - caso seja ocorrencia sobre um dos cargos enviar por email(futuro por whatsapp)
 - enviar relatório semanal por email
+
+
+# comando para executar:
+- python -m bot_mppr.bot

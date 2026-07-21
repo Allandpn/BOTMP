@@ -58,10 +58,12 @@ def baixar_pdf(edicao, ano):
         }
 
     except requests.RequestException as erro:
-
-        print(
-            f"Erro HTTP {response.status_code} ao baixar {edicao}/{ano}"
-        )
+        if response is not None:
+            print(
+                f"Erro HTTP {response.status_code} ao baixar {edicao}/{ano}"
+            )
+        else:
+            print(f"Erro {erro} ao baixar {edicao}/{ano}")
 
         return None
 
