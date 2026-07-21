@@ -6,7 +6,7 @@ def main():
 
     print("Iniciando bot...")
 
-    ultima_edicao = 1784  # depois vem do banco
+    ultima_edicao = 1800  # depois vem do banco
     ultimo_ano = 2025     # depois vem do banco
 
     novas_edicoes = buscar_novas_edicoes(
