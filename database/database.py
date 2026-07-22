@@ -207,7 +207,7 @@ def obter_ocorrencias_sem_classificacao():
 
 
 
-def salvar_classificacao(ocorrencia_id, resultado, classificacao, confianca, modelo, justificativa):
+def salvar_classificacao(ocorrencia_id, resultado, classificacao, confianca, modelo, justificativa, notificacao):
     conn = conectar_banco()
     try:
         conn.execute(
@@ -220,11 +220,12 @@ def salvar_classificacao(ocorrencia_id, resultado, classificacao, confianca, mod
                 confianca,
                 modelo,
                 justificativa,
-                data_classificacao
+                data_classificacao,
+                notificacao
             )
             VALUES
             (
-                ?, ?, ?, ?, ?, ?, ?
+                ?, ?, ?, ?, ?, ?, ?, ?
             )
             """,
             (
@@ -234,9 +235,11 @@ def salvar_classificacao(ocorrencia_id, resultado, classificacao, confianca, mod
                 confianca,
                 modelo,
                 justificativa,
-                datetime.now().isoformat()
+                datetime.now().isoformat(),
+                notificacao
             )
         )
         conn.commit()
     finally:
         conn.close()
+

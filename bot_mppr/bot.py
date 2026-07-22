@@ -53,18 +53,12 @@ def main():
             ocorrencias
         )
 
-        ocorrencias_sc = obter_ocorrencias_sem_classificacao()
-       
-        # for ocorrencia in ocorrencias_sc:
-        #     resultado = classificar_ocorrencia(ocorrencia)
-        #     salvar_classificacao(ocorrencia["id"], resultado, classificacao, confianca, modelo, justificativa)
-
         marcar_edicao_processada(
-                    edicao_id
-                )
+                            edicao_id
+                        )
 
         ultima_edicao_processada = edicao
-
+        
         if not ocorrencias:
             print(
                 f"Nenhuma ocorrência encontrada "
@@ -79,10 +73,26 @@ def main():
         for ocorrencia in ocorrencias:
             print(ocorrencia)
 
-    if ultima_edicao_processada:
-        salvar_estado(ultima_edicao_processada["numero"], ultima_edicao_processada["ano"])
+    ocorrencias_sc = obter_ocorrencias_sem_classificacao()
+       
+    for ocorrencia in ocorrencias_sc:
+        try:
+            resultado = classificar_ocorrencia(ocorrencia)
+            salvar_classificacao(
+                ocorrencia["id"], 
+                resultado["resultado"], 
+                resultado["classificacao"], 
+                resultado["confianca"], 
+                resultado["modelo"], 
+                resultado["justificativa"],
+                resultado["notificacao"]
+                )
+        except Exception as erro:
+            print(f"Erro ao classificar ocorrencia {ocorrencia["id"]}: {erro}")         
+        
 
-   
+    if ultima_edicao_processada:
+        salvar_estado(ultima_edicao_processada["numero"], ultima_edicao_processada["ano"])   
 
 
 if __name__ == "__main__":
