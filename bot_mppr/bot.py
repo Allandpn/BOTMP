@@ -2,6 +2,7 @@ from bot_mppr.scraper import buscar_novas_edicoes
 from bot_mppr.parser import processar_pdf
 from database.database import inicializar_banco, obter_estado, salvar_estado, salvar_edicao, marcar_edicao_processada, salvar_ocorencias, salvar_classificacao, obter_ocorrencias_sem_classificacao
 from bot_mppr.ia.classificador_ia import classificar_ocorrencia
+from bot_mppr.email.notificacoes import enviar_notificacoes
 
 
 def main():
@@ -92,7 +93,9 @@ def main():
         
 
     if ultima_edicao_processada:
-        salvar_estado(ultima_edicao_processada["numero"], ultima_edicao_processada["ano"])   
+        salvar_estado(ultima_edicao_processada["numero"], ultima_edicao_processada["ano"])
+
+    enviar_notificacoes()   
 
 
 if __name__ == "__main__":

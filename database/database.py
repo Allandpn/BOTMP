@@ -1,6 +1,7 @@
 import sqlite3
 from pathlib import Path
 from datetime import datetime
+import json
 
 
 DATABASE_DIR = Path(__file__).parent
@@ -243,3 +244,72 @@ def salvar_classificacao(ocorrencia_id, resultado, classificacao, confianca, mod
     finally:
         conn.close()
 
+
+def obter_notificacoes_pendentes():
+    conn = conectar_banco()
+    try:
+        notificacoes = conn.execute(
+        """
+            SELECT
+            o.id AS ocorrencia_id,
+            e.numero,
+            e.ano,
+            o.pagina,            
+            e.url,            
+            o.expressao,
+            c.classificacao,
+            c.notificacao
+            FROM classificacoes_ia c
+            INNER JOIN ocorrencias o
+            ON o.id = c.ocorrencia_id
+            INNER JOIN edicoes e
+            ON e.id = o.edicao_id
+            LEFT JOIN notificacoes n
+            ON n.ocorrencia_id = o.id
+            AND n.canal = 'EMAIL'
+            AND n.status = 'ENVIADO'
+            WHERE c.resultado = 'RELEVANTE'
+            AND n.id IS NULL
+            ORDER BY e.ano, e.numero, o.pagina;
+        """
+        ).fetchall()
+        return [dict(item) for item in notificacoes]
+    finally:
+        conn.close()
+
+
+def registrar_notificacao(ocorrencia_id, status, erro=None):
+    conn = conectar_banco()
+    try:
+        conn.execute(
+        """
+            INSERT INTO notificacoes
+            (
+                ocorrencia_id,
+                canal,
+                status, 
+                tentativas,
+                data_envio,
+                erro
+            )
+            VALUES
+            (
+                ?,?,?,?,?,?
+            )
+        """,
+            (
+                ocorrencia_id,
+                "EMAIL",
+                status,
+                1,
+                datetime.now().isoformat(),
+                erro
+            )
+        )
+        conn.commit()
+    finally:
+        conn.close()
+
+
+# result = obter_notificacoes_pendentes()
+# print(json.dumps(result, indent=4, ensure_ascii=False))
