@@ -2,6 +2,7 @@ import sqlite3
 from pathlib import Path
 from datetime import datetime
 import json
+from bot_mppr.logger import logger
 
 
 DATABASE_DIR = Path(__file__).parent
@@ -19,6 +20,7 @@ def conectar_banco():
 
 
 def inicializar_banco():
+    logger.info("Inicializando banco de dados")
     with conectar_banco() as conn:
         with open(
             SCHEMA_PATH,
@@ -50,6 +52,7 @@ def inicializar_banco():
             )
         )
         conn.commit()
+        logger.info("Banco de dados inicializado")
 
 
 def obter_estado():
@@ -69,6 +72,9 @@ def obter_estado():
             "ultima_edicao": estado["ultima_edicao"],
             "ultimo_ano": estado["ultimo_ano"]
         }
+    except Exception:
+            logger.exception("Erro ao salvar estado do banco")
+            raise
     finally:
         conn.close()
 
@@ -92,8 +98,15 @@ def salvar_estado(ultima_edicao, ultimo_ano):
             )
         )
         conn.commit()
+        logger.info("=" * 60)
+        logger.info("Edição final atualizada: %s/%s", ultima_edicao, ultimo_ano)
+        logger.info("=" * 60)
+    except Exception:
+            logger.exception("Erro ao salvar estado do banco")
+            raise
     finally:
         conn.close()
+    
 
 
 def salvar_edicao(numero, ano, url):
@@ -134,7 +147,12 @@ def salvar_edicao(numero, ano, url):
                 ano
             )
         ).fetchone()
+        logger.info("=" * 60)
+        logger.info("Edição %s/%s salva no banco de dados", numero, ano)
         return edicao["id"]
+    except Exception:
+            logger.exception("Erro ao salvar estado do banco")
+            raise
     finally:
         conn.close()
 
@@ -151,6 +169,9 @@ def marcar_edicao_processada(edicao_id):
             (edicao_id,)
         )
         conn.commit()
+    except Exception:
+            logger.exception("Erro ao salvar estado do banco")
+            raise
     finally:
         conn.close()
 
@@ -185,6 +206,9 @@ def salvar_ocorencias(edicao_id, ocorrencias):
                 )
             )
         conn.commit()
+    except Exception:
+            logger.exception("Erro ao salvar estado do banco")
+            raise
     finally:
         conn.close()
 
@@ -203,6 +227,9 @@ def obter_ocorrencias_sem_classificacao():
             """
         ).fetchall()
         return [dict(ocorrencia) for ocorrencia in ocorrencias]
+    except Exception:
+            logger.exception("Erro ao salvar estado do banco")
+            raise
     finally:
         conn.close()
 
@@ -241,6 +268,14 @@ def salvar_classificacao(ocorrencia_id, resultado, classificacao, confianca, mod
             )
         )
         conn.commit()
+        logger.info(
+            "Classificação salva para ocorrência %s (%s)",
+            ocorrencia_id,
+            resultado
+        )
+    except Exception:
+            logger.exception("Erro ao salvar estado do banco")
+            raise
     finally:
         conn.close()
 
@@ -274,6 +309,9 @@ def obter_notificacoes_pendentes():
         """
         ).fetchall()
         return [dict(item) for item in notificacoes]
+    except Exception:
+            logger.exception("Erro ao salvar estado do banco")
+            raise
     finally:
         conn.close()
 
@@ -307,6 +345,14 @@ def registrar_notificacao(ocorrencia_id, status, erro=None):
             )
         )
         conn.commit()
+        logger.info(
+            "Notificação registrada (%s) para ocorrência %s",
+            status,
+            ocorrencia_id
+        )
+    except Exception:
+        logger.exception("Erro ao salvar estado do banco")
+        raise
     finally:
         conn.close()
 

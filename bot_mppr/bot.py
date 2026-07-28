@@ -3,11 +3,14 @@ from bot_mppr.parser import processar_pdf
 from database.database import inicializar_banco, obter_estado, salvar_estado, salvar_edicao, marcar_edicao_processada, salvar_ocorencias, salvar_classificacao, obter_ocorrencias_sem_classificacao
 from bot_mppr.ia.classificador_ia import classificar_ocorrencia
 from bot_mppr.email.notificacoes import enviar_notificacoes
+from bot_mppr.logger import logger
 
 
 def main():
 
-    print("Iniciando bot...")
+    logger.info("=" * 60)
+    logger.info("Iniciando Bot MPPR")
+    logger.info("=" * 60)
 
     inicializar_banco()
 
@@ -21,12 +24,10 @@ def main():
     )
 
     if not novas_edicoes:
-        print("Nenhuma nova edição encontrada.")
+        logger.info("Nenhuma edição nova encontrada.")
         return
 
-    print(
-        f"{len(novas_edicoes)} nova(s) edição(ões) encontrada(s)"
-    )
+    logger.info("%s nova(s) edição(ões) encontrada(s)", len(novas_edicoes))
 
     ultima_edicao_processada = None
 
@@ -43,9 +44,9 @@ def main():
                     url
                 )
 
-        print("=" * 60)
-        print(f"Processando edição {numero}/{ano}")
-        print("=" * 60)       
+        logger.info("=" * 60)
+        logger.info("Processando edição %s/%s",numero, ano)
+        logger.info("=" * 60)
 
         ocorrencias = processar_pdf(pdf)
 
@@ -61,21 +62,15 @@ def main():
         ultima_edicao_processada = edicao
         
         if not ocorrencias:
-            print(
-                f"Nenhuma ocorrência encontrada "
-                f"na edição {numero}/{ano}"
-            )
+            logger.info("Nenhuma ocorrência encontrada na edição %s/%s", numero, ano)
             continue
 
-        print(
-            f"{len(ocorrencias)} ocorrência(s) "
-            f"encontrada(s) na edição {numero}/{ano}"
-        )  
-        for ocorrencia in ocorrencias:
-            print(ocorrencia)
+        logger.info("%s ocorrência(s) encontrada(s) na edição %s/%s", len(ocorrencias), numero, ano)
 
     ocorrencias_sc = obter_ocorrencias_sem_classificacao()
-       
+    logger.info("=" * 60)
+    logger.info("Salvar classificações IA no banco de dados")
+    logger.info("=" * 60)
     for ocorrencia in ocorrencias_sc:
         try:
             resultado = classificar_ocorrencia(ocorrencia)
@@ -89,13 +84,15 @@ def main():
                 resultado["notificacao"]
                 )
         except Exception as erro:
-            print(f"Erro ao classificar ocorrencia {ocorrencia["id"]}: {erro}")         
-        
+            logger.exception("Erro ao classificar ocorrencia %s", ocorrencia["id"])          
 
     if ultima_edicao_processada:
         salvar_estado(ultima_edicao_processada["numero"], ultima_edicao_processada["ano"])
-
-    enviar_notificacoes()   
+    
+    enviar_notificacoes()
+    logger.info("=" * 60)
+    logger.info("Execução finalizada com sucesso.")
+    logger.info("=" * 60)   
 
 
 if __name__ == "__main__":

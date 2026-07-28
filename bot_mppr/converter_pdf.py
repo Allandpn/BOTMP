@@ -24,8 +24,6 @@ def extrair_texto_corrigido(pdf_path):
             texto_esq = esquerda.extract_text()
             texto_dir = direita.extract_text()
 
-            print(f"Processando página {i+1}...")
-
             # Se tem texto nas duas colunas → trata como 2 colunas
             if texto_esq and texto_dir:
 
@@ -76,28 +74,15 @@ def limpar_texto(texto):
 
 
 def salvar_txt(texto, path):
-
     os.makedirs(os.path.dirname(path), exist_ok=True)
-
     with open(path, "w", encoding="utf-8") as f:
         f.write(texto)
 
-    print(f"\nArquivo salvo em: {path}")
-
 
 def main():
-
-    print("Convertendo PDF para texto...")
-
     texto = extrair_texto_corrigido(INPUT_PDF)
-
-    #print("Limpando texto...")
-
     texto = limpar_texto(texto)
-
     salvar_txt(texto, OUTPUT_TXT)
-
-    print("\nConcluído!")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,60 @@
+G:.
+|   .env
+|   .gitignore
+|   debug_extracao.txt
+|   estrutura_completa.txt
+|   README.md
+|   requirements.txt
+|  
++---bot_mppr
+|   |   bot.py
+|   |   converter_pdf.py
+|   |   debug_extracao.txt
+|   |   parser.py
+|   |   scraper.py
+|   |   
+|   +---email
+|   |   |   cliente.py
+|   |   |   notificacoes.py
+|   |   |   templates.py
+|   |   |   __init__.py
+|   |   |   
+|   |   \---__pycache__
+|   |           cliente.cpython-314.pyc
+|   |           notificacoes.cpython-314.pyc
+|   |           templates.cpython-314.pyc
+|   |           __init__.cpython-314.pyc
+|   |           
+|   +---ia
+|   |   |   classificador_ia.py
+|   |   |   cliente.py
+|   |   |   modelos.py
+|   |   |   prompts.py
+|   |   |   __init__.py
+|   |   |   
+|   |   \---__pycache__
+|   |           classificador_ia.cpython-314.pyc
+|   |           cliente.cpython-314.pyc
+|   |           modelos.cpython-314.pyc
+|   |           prompts.cpython-314.pyc
+|   |           __init__.cpython-314.pyc
+|   |           
+|   \---__pycache__
+|           bot.cpython-314.pyc
+|           parser.cpython-314.pyc
+|           scraper.cpython-314.pyc
+|           
++---database
+|   |   bot.db
+|   |   database.py
+|   |   schema.sql
+|   |   __init__.py
+|   |   
+|   \---__pycache__
+|           database.cpython-314.pyc
+|           __init__.cpython-314.pyc
+|           
+\---__pycache__
+        parser.cpython-314.pyc
+        scraper.cpython-314.pyc
+        
