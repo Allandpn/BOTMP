@@ -37,7 +37,7 @@ def montar_email(notificacoes):
 
     corpo = "\n".join(linhas)
     assunto = (
-        f"Concurso MPPR - Nova notificação para o(s) cargo(s) de {", ".join(cargos)}"
+        f"Concurso MPPR - Nova notificação para o(s) cargo(s) de {', '.join(cargos)}"
     )
 
     return assunto, corpo

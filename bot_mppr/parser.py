@@ -298,7 +298,7 @@ def salvar_texto(pagina, texto_normalizado, arquivo_debug):
         f"\n{'=' * 80}\n"
     )
     arquivo_debug.write(
-        f"PÁGINA {pagina["pagina"]}\n"
+        f"PÁGINA {pagina['pagina']}\n"
     )
     arquivo_debug.write(
         f"{'=' * 80}\n\n"
